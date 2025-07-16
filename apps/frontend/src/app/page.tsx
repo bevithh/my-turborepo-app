@@ -3,20 +3,18 @@
 import { useEffect, useState } from 'react';
 import { Table, Button, Input, Modal, Form, Space, Popconfirm, message } from 'antd';
 
-
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.origin.includes('localhost'))
+  typeof window !== 'undefined' && window.location.origin.includes('localhost')
     ? 'http://localhost:8000'
-    : 'https://my-turborepo-app-backend.vercel.app';
-
+    : process.env.NEXT_PUBLIC_API_URL || 'https://my-turborepo-app-backend.vercel.app';
 
 type Task = {
-  id?: number; 
+  id?: number;
   task: string;
   status: string;
 };
 
-export default function Page() {
+export default function AntdComponents() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -127,7 +125,7 @@ export default function Page() {
                 </Button>
                 <Popconfirm
                   title="Are you sure you want to delete this task?"
-                  onConfirm={() => handleDelete(record.id!)} 
+                  onConfirm={() => handleDelete(record.id!)}
                   okText="Yes"
                   cancelText="No"
                 >
@@ -182,5 +180,3 @@ export default function Page() {
     </div>
   );
 }
-
-
