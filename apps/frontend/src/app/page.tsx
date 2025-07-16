@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Table, Button, Input, Modal, Form, Space, Popconfirm, message } from 'antd';
 
 const API_URL =
@@ -14,7 +15,7 @@ type Task = {
   status: string;
 };
 
-export default function AntdComponents() {
+export default function Page() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
