@@ -3,7 +3,11 @@
 import { useEffect, useState } from 'react';
 import { Table, Button, Input, Modal, Form, Space, Popconfirm, message } from 'antd';
 
-const API_URL = 'http://localhost:8000';
+
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.origin.includes('localhost'))
+    ? 'http://localhost:8000'
+    : 'https://my-turborepo-app-backend.vercel.app';
 
 
 type Task = {
@@ -27,6 +31,7 @@ export default function Page() {
       setTasks(data);
     } catch (err) {
       console.error('Failed to fetch tasks:', err);
+      message.error('Failed to fetch tasks');
     }
     setLoading(false);
   };
@@ -177,4 +182,5 @@ export default function Page() {
     </div>
   );
 }
+
 
