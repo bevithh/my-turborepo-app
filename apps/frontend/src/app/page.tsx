@@ -5,8 +5,15 @@ import { Table, Button, Input, Modal, Form, Space, Popconfirm, message } from 'a
 
 const API_URL = 'http://localhost:8000';
 
+
+type Task = {
+  id?: number; 
+  task: string;
+  status: string;
+};
+
 export default function Page() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
@@ -16,7 +23,7 @@ export default function Page() {
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/tasks`);
-      const data = await res.json();
+      const data: Task[] = await res.json();
       setTasks(data);
     } catch (err) {
       console.error('Failed to fetch tasks:', err);
@@ -28,7 +35,7 @@ export default function Page() {
     fetchTasks();
   }, []);
 
-  const handleAdd = async (values: any) => {
+  const handleAdd = async (values: Task) => {
     try {
       await fetch(`${API_URL}/tasks`, {
         method: 'POST',
@@ -41,10 +48,11 @@ export default function Page() {
       fetchTasks();
     } catch (err) {
       console.error('Failed to add task:', err);
+      message.error('Failed to add task');
     }
   };
 
-  const handleEdit = async (values: any) => {
+  const handleEdit = async (values: Task) => {
     if (editingTaskId === null) return;
     try {
       await fetch(`${API_URL}/tasks/${editingTaskId}`, {
@@ -59,10 +67,10 @@ export default function Page() {
       fetchTasks();
     } catch (err) {
       console.error('Failed to edit task:', err);
+      message.error('Failed to update task');
     }
   };
 
-  // ✅ Add handleDelete back
   const handleDelete = async (id: number) => {
     try {
       await fetch(`${API_URL}/tasks/${id}`, {
@@ -100,13 +108,13 @@ export default function Page() {
           {
             title: 'Actions',
             key: 'actions',
-            render: (_, record) => (
+            render: (_, record: Task) => (
               <Space>
                 <Button
                   type="link"
                   onClick={() => {
                     form.setFieldsValue(record);
-                    setEditingTaskId(record.id);
+                    setEditingTaskId(record.id || null);
                     setIsModalVisible(true);
                   }}
                 >
@@ -114,7 +122,7 @@ export default function Page() {
                 </Button>
                 <Popconfirm
                   title="Are you sure you want to delete this task?"
-                  onConfirm={() => handleDelete(record.id)} // ✅ Now works
+                  onConfirm={() => handleDelete(record.id!)} 
                   okText="Yes"
                   cancelText="No"
                 >
@@ -139,7 +147,7 @@ export default function Page() {
         onOk={() => {
           form
             .validateFields()
-            .then((values) => {
+            .then((values: Task) => {
               if (editingTaskId) {
                 handleEdit(values);
               } else {
@@ -169,3 +177,4 @@ export default function Page() {
     </div>
   );
 }
+
