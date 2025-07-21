@@ -5,9 +5,12 @@ import dynamic from 'next/dynamic';
 import { Table, Button, Input, Modal, Form, Space, Popconfirm, message } from 'antd';
 
 const API_URL =
-  typeof window !== 'undefined' && window.location.origin.includes('localhost')
+  process.env.NEXT_PUBLIC_API_URL ??
+  (process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000'
-    : process.env.NEXT_PUBLIC_API_URL || 'https://my-turborepo-app-backend.vercel.app';
+    : 'https://my-turborepo-app-backend.vercel.app');
+
+
 
 type Task = {
   id?: number;
